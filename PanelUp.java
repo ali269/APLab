@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class PanelUp extends JPanel {
     private JTextArea area;
@@ -21,4 +23,7 @@ public class PanelUp extends JPanel {
         add(scrollPane);
         add(field);
     }
+
+
+
 }

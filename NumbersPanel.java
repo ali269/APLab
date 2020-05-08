@@ -1,6 +1,8 @@
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicTreeUI;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -49,6 +51,24 @@ public class NumbersPanel extends JPanel {
             String u = field.getText();
             if (u.length() < 10) {
                 field.setText(u + s);
+            }
+        }
+    }
+
+    private class KeyHandler extends KeyAdapter {
+        private String s;
+        public KeyHandler(String s) {
+            this.s = s;
+        }
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+            super.keyTyped(e);
+            if (((Character)e.getKeyChar()).toString().equals(s)) {
+                String u = field.getText();
+                if (u.length() < 10) {
+                    field.setText(u + s);
+                }
             }
         }
     }

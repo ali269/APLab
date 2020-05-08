@@ -8,7 +8,9 @@ public class Operands extends JTabbedPane {
     private JPanel engine;
     private JTextField field;
     private JTextArea area;
-
+    private JButton[] engines1 = new JButton[3];
+    private JButton[] engines2 = new JButton[3];
+    String[] a = {"a", "b", "c"};
 
     public Operands(JTextArea area, JTextField field) {
         this.area = area;
@@ -19,6 +21,27 @@ public class Operands extends JTabbedPane {
         engine = new JPanel();
         engine.setBackground(Color.GRAY);
         engine.setLayout(new GridLayout(2, 2, 5, 5));
+        int i = 0;
+        for (String s: Operand.eng[0]) {
+            JButton b = new JButton();
+            b.setText(s);
+            b.setFocusable(false);
+            b.addMouseListener(new MouseEngineHandler(s));
+            b.setToolTipText(a[i]);
+            engines1[i] = b;
+            i++;
+        }
+        i = 0;
+        for (String s: Operand.eng[1]) {
+            JButton b = new JButton();
+            b.setText(s);
+            b.setFocusable(false);
+            b.addMouseListener(new MouseEngineHandler(s));
+            b.setToolTipText("Shift" + "+" +  a[i]);
+            engines2[i] = b;
+            i++;
+        }
+
         prepareGUI();
     }
 
@@ -37,7 +60,7 @@ public class Operands extends JTabbedPane {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                Calculator.setSecond(Float.parseFloat(field.getText()));
+                Calculator.setSecond(Double.parseDouble(field.getText()));
                 area.setText(area.getText() + field.getText() + b.getText() + Calculator.getResult() + "|\n");
                 field.setText("");
             }
@@ -45,21 +68,20 @@ public class Operands extends JTabbedPane {
         commons.add(b);
         addTab("Commons", commons);
 
-        for (String s: Operand.eng[0]) {
-            JButton button = new JButton();
-            button.setFocusable(false);
-            button.setText(s);
-            button.addMouseListener(new MouseHandler(s));
-            engine.add(button);
+        for (int i = 0; i < 3; i++) {
+            engine.add(engines1[i]);
         }
+        addShiftButton();
+        addTab("eng", engine);
+    }
+
+    private void addShiftButton() {
         JButton button = new JButton();
         button.setText("SHIFT");
         button.setFocusable(false);
         button.addMouseListener(new ShiftHandler());
         engine.add(button);
-        addTab("eng", engine);
     }
-
 
 
 
@@ -85,16 +107,38 @@ public class Operands extends JTabbedPane {
         @Override
         public void mouseClicked(MouseEvent e) {
             super.mouseClicked(e);
-            for (int i = 0; i < 3; i++) {
-                JButton b;
-                if (engine.getComponent(i) instanceof JButton) {
-                    b = (JButton) engine.getComponent(i);
-                    if (!b.getText().equals(Operand.eng[0][i]))
-                        b.setText(Operand.eng[0][i]);
-                    else
-                        b.setText(Operand.eng[1][i]);
+            JButton b = (JButton) engine.getComponent(0);
+            int i = 0;
+            if (b.getText().equals(Operand.eng[0][0]))
+                i = 1;
+            engine.removeAll();
+            updateUI();
+            if (i == 0) {
+                for (int j = 0; j < 3; j++) {
+                    engine.add(engines1[j]);
                 }
             }
+            else {
+                for (int j = 0; j < 3; j++) {
+                    engine.add(engines2[j]);
+                }
+            }
+            addShiftButton();
+        }
+    }
+
+    private class MouseEngineHandler extends MouseAdapter{
+        private String s;
+        public MouseEngineHandler(String s) {
+            this.s = s;
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            super.mouseClicked(e);
+            Calculator.setOperand(s);
+            String s1 = area.getText();
+            area.setText(s1 + s);
         }
     }
 }
